@@ -49,10 +49,14 @@ public abstract class Mapper<T extends IPersistableObject> implements IMapper<T>
 
     @Override
     public abstract String GetFindQuery(IPersistenceSearcher<T> searcher);
-
+    
+    @Override
+    public abstract Iterable<String> GetObjectCreateQueries(T objectToSave);
+    
+    @Override
+    public abstract Iterable<String> GetObjectSaveQueries(T objectToSave);
+    
     protected abstract T MapFromResultSet(ResultSet results);
-
-    protected abstract Iterable<String> GetObjectSaveQueries(T objectToSave);
 
     private static boolean IsEmptyResultSet(ResultSet results) {
         try {

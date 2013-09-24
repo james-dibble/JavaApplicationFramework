@@ -5,43 +5,106 @@
 package JavaApplicationFramework.Mapping;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collection;
+import java.util.List;
+import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author james
  */
-public final class MySqlPersistenceManager implements IPersistenceManager{
-    private final Connection _connection; 
+public final class MySqlPersistenceManager implements IPersistenceManager {
+
+    private final Connection _connection;
     private final MapperDictionary _mappers;
-    
+    private List<String> _statementsToCommit;
+
     public MySqlPersistenceManager(Connection connection, MapperDictionary mappers) {
         this._connection = connection;
         this._mappers = mappers;
+        this._statementsToCommit = new Stack<>();
     }
-    
+
     @Override
     public <T extends IPersistableObject> T Find(IPersistenceSearcher<T> searcher) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        IMapper mapper = this.GetMapperForType(searcher.Type());
+
+        String query = mapper.GetFindQuery(searcher);
+
+        T result = null;
+
+        try {
+            Statement statement = this._connection.createStatement();
+
+            ResultSet results = statement.executeQuery(query);
+
+            result = (T) mapper.FindSingle(results);
+        } catch (SQLException ex) {
+            Logger.getLogger(MySqlPersistenceManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return result;
     }
 
     @Override
     public <T extends IPersistableObject> Iterable<T> FindCollectionOf(IPersistenceSearcher<T> searcher) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        IMapper mapper = this.GetMapperForType(searcher.Type());
+
+        String query = mapper.GetFindQuery(searcher);
+
+        Iterable<T> result = null;
+
+        try {
+            Statement statement = this._connection.createStatement();
+
+            ResultSet results = statement.executeQuery(query);
+
+            result = mapper.FindCollectionOf(results);
+        } catch (SQLException ex) {
+            Logger.getLogger(MySqlPersistenceManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return result;
     }
 
     @Override
     public void Add(IPersistableObject objectToSave) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        IMapper mapper = this.GetMapperForType(objectToSave.getClass());
+        
+        Iterable<String> queries = mapper.GetObjectCreateQueries(objectToSave);
+        
+        this._statementsToCommit.addAll((Collection<? extends String>) queries);
     }
 
     @Override
     public void Change(IPersistableObject objectToSave) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        IMapper mapper = this.GetMapperForType(objectToSave.getClass());
+        
+        Iterable<String> queries = mapper.GetObjectCreateQueries(objectToSave);
+        
+        this._statementsToCommit.addAll((Collection<? extends String>) queries);
     }
 
     @Override
-    public void Commit() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void Commit() throws SQLException {
+        try {
+            for (String statement : this._statementsToCommit) {
+
+                Statement sqlStatement = this._connection.createStatement();
+                sqlStatement.executeUpdate(statement);
+            }
+        } catch (SQLException ex) {
+            this._statementsToCommit.clear();
+            throw ex;
+        }
     }
-    
+
+    private IMapper GetMapperForType(Class type) {
+        return this._mappers.get(type);
+    }
 }

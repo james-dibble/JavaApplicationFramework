@@ -4,6 +4,8 @@
  */
 package JavaApplicationFramework.Mapping;
 
+import java.sql.SQLException;
+
 /**
  *
  * @author james
@@ -17,5 +19,5 @@ public interface IPersistenceManager {
     
     void Change(IPersistableObject objectToSave);
     
-    void Commit();
+    void Commit() throws SQLException;
 }

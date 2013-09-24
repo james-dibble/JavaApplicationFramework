@@ -11,7 +11,17 @@ import java.util.HashMap;
  * @author james
  */
 public class PersistenceSearcher<T extends IPersistableObject> extends HashMap<String, Object> implements IPersistenceSearcher<T> {
-
+    private final Class<T> _type;
+    
+    public PersistenceSearcher(Class<T> type) {
+        this._type = type;
+    }
+    
+    @Override
+    public Class<T> Type() {
+        return this._type;
+    }
+    
     @Override
     public Object GetArgument(String key) {
         return this.get(key);

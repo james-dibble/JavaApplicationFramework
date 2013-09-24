@@ -9,6 +9,8 @@ package JavaApplicationFramework.Mapping;
  * @author james
  */
 public interface IPersistenceSearcher<T extends IPersistableObject> {
+    Class<T> Type();
+    
     Object GetArgument(String key);
     
     boolean HasArgument(String key);

@@ -10,7 +10,7 @@ import java.util.HashMap;
  *
  * @author james
  */
-public final class MapperDictionary extends HashMap<Class, IMapper> {
+public final class MapperDictionary extends HashMap<Class<?>, IMapper> {
     @Override
     public IMapper put(Class key, IMapper value){
         if(key != value.GetMappedType()){

@@ -9,4 +9,5 @@ package JavaApplicationFramework.Mapping;
  * @author james
  */
 public interface IPersistableObject {
+    boolean IsNewObject();
 }

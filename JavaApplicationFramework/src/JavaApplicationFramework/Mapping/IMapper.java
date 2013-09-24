@@ -18,4 +18,8 @@ public interface IMapper<T extends IPersistableObject> {
     T FindSingle(ResultSet results);
     
     Iterable<T> FindCollectionOf(ResultSet results);
+    
+    Iterable<String> GetObjectCreateQueries(T objectToSave);
+    
+    Iterable<String> GetObjectSaveQueries(T objectToSave);
 }
