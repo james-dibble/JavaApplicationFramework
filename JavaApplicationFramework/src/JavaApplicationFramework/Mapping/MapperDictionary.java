@@ -18,6 +18,6 @@ public final class MapperDictionary extends HashMap<Class<?>, IMapper> {
                     "You cannot add a mapper to this dictionary with a key of different type to what it maps.");
         }
         
-        return value;
+        return super.put(key, value);
     }
 }

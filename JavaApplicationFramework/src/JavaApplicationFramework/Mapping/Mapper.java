@@ -21,6 +21,10 @@ public abstract class Mapper<T extends IPersistableObject> implements IMapper<T>
 
     @Override
     public T FindSingle(ResultSet results) {
+        if(Mapper.IsEmptyResultSet(results)){
+            return null;
+        }
+        
         T mappedObject = this.MapFromResultSet(results);
         
         return mappedObject;

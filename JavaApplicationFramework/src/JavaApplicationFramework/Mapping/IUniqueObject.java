@@ -8,6 +8,6 @@ package JavaApplicationFramework.Mapping;
  *
  * @author james
  */
-public interface IUniqueObject<T> {
+public interface IUniqueObject<T> extends IPersistableObject {
     T GetId();
 }

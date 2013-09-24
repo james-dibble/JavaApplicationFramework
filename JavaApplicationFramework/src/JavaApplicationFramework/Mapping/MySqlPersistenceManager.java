@@ -74,6 +74,10 @@ public final class MySqlPersistenceManager implements IPersistenceManager {
 
     @Override
     public void Add(IPersistableObject objectToSave) {
+        if(!objectToSave.IsNewObject()){
+            this.Change(objectToSave);
+        }
+        
         IMapper mapper = this.GetMapperForType(objectToSave.getClass());
         
         Iterable<String> queries = mapper.GetObjectCreateQueries(objectToSave);
@@ -83,9 +87,13 @@ public final class MySqlPersistenceManager implements IPersistenceManager {
 
     @Override
     public void Change(IPersistableObject objectToSave) {
+        if(objectToSave.IsNewObject()){
+            this.Add(objectToSave);
+        }
+        
         IMapper mapper = this.GetMapperForType(objectToSave.getClass());
         
-        Iterable<String> queries = mapper.GetObjectCreateQueries(objectToSave);
+        Iterable<String> queries = mapper.GetObjectSaveQueries(objectToSave);
         
         this._statementsToCommit.addAll((Collection<? extends String>) queries);
     }
@@ -94,7 +102,6 @@ public final class MySqlPersistenceManager implements IPersistenceManager {
     public void Commit() throws SQLException {
         try {
             for (String statement : this._statementsToCommit) {
-
                 Statement sqlStatement = this._connection.createStatement();
                 sqlStatement.executeUpdate(statement);
             }
@@ -102,9 +109,17 @@ public final class MySqlPersistenceManager implements IPersistenceManager {
             this._statementsToCommit.clear();
             throw ex;
         }
+        
+        this._statementsToCommit.clear();
     }
 
     private IMapper GetMapperForType(Class type) {
-        return this._mappers.get(type);
+        IMapper mapper = this._mappers.get(type);
+        
+        if(mapper == null){
+            String message = String.format("A mapper has not been registered for type %s", type.toString());
+            throw new UnsupportedOperationException(message);
+        }
+        return mapper;
     }
 }
