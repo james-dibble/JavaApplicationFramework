@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package JavaApplicationFramework.Mapping;
 
 import java.sql.ResultSet;
@@ -13,10 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-/**
- *
- * @author james
- */
 public class MapperTests {
     private FakeDomainObject _fakeObject;
     

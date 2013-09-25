@@ -1,7 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Mapper.java" company="James Dibble">
+//    Copyright 2013 James Dibble
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 package JavaApplicationFramework.Mapping;
 
 import java.sql.ResultSet;
@@ -11,8 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author james
+ * Extending classes define methods to interact with a persitable object.
+ * @param <T> The type this mapper can persist.
  */
 public abstract class Mapper<T extends IPersistableObject> implements IMapper<T> {
 
@@ -60,6 +61,11 @@ public abstract class Mapper<T extends IPersistableObject> implements IMapper<T>
     @Override
     public abstract Iterable<String> GetObjectSaveQueries(T objectToSave);
     
+    /**
+     * Create a domain object from the results of a query.
+     * @param results The results of a query from the persistence source.
+     * @return A populated domain object.
+     */
     protected abstract T MapFromResultSet(ResultSet results);
 
     private static boolean IsEmptyResultSet(ResultSet results) {

@@ -1,14 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MapperDictionary.java" company="James Dibble">
+//    Copyright 2013 James Dibble
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 package JavaApplicationFramework.Mapping;
 
 import java.util.HashMap;
 
 /**
- *
- * @author james
+ * A class to associate an instance of a mapper to the type it maps.
  */
 public final class MapperDictionary extends HashMap<Class<?>, IMapper> {
     @Override

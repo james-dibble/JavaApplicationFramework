@@ -1,18 +1,23 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="PersistenceSearcher.java" company="James Dibble">
+//    Copyright 2013 James Dibble
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 package JavaApplicationFramework.Mapping;
 
 import java.util.HashMap;
 
 /**
- *
- * @author james
+ * A class to use to search a persistence source.
+ * @param <T> The type of the object to find in the persistence source.
  */
 public class PersistenceSearcher<T extends IPersistableObject> extends HashMap<String, Object> implements IPersistenceSearcher<T> {
     private final Class<T> _type;
     
+    /**
+     * Creates an instance of the PersistenceSearcher class.
+     * @param type The type this persistence searcher is being used to find.
+     */
     public PersistenceSearcher(Class<T> type) {
         this._type = type;
     }

@@ -1,7 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MySqlPersistenceManager.java" company="James Dibble">
+//    Copyright 2013 James Dibble
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 package JavaApplicationFramework.Mapping;
 
 import java.sql.Connection;
@@ -15,8 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author james
+ * A context to manage interaction to a MySQL persistence source.
  */
 public final class MySqlPersistenceManager implements IPersistenceManager {
 

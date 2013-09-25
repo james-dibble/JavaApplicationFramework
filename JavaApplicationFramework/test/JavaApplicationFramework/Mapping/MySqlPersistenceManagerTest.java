@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package JavaApplicationFramework.Mapping;
 
 import java.lang.reflect.Field;
@@ -16,10 +12,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.Mockito;
 
-/**
- *
- * @author james
- */
 public class MySqlPersistenceManagerTest {
 
     private Connection _fakeConnection;
