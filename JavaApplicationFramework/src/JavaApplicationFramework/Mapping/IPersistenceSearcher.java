@@ -5,10 +5,12 @@
 // --------------------------------------------------------------------------------------------------------------------
 package JavaApplicationFramework.Mapping;
 
+import java.util.Map;
+
 /**
  * Implementing classes define methods for searching a persistence source.
  */
-public interface IPersistenceSearcher<T extends IPersistableObject> {
+public interface IPersistenceSearcher<T extends IPersistableObject> extends Map<String, Object>{
     /**
      * Get the type to be searched for.
      * @return The type to be searched for.
