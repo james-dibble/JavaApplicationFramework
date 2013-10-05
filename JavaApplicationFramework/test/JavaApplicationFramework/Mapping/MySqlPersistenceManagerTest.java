@@ -12,17 +12,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.Mockito;
 
-public class MySqlPersistenceManagerTest {
-
+public class MySqlPersistenceManagerTest
+{
     private Connection _fakeConnection;
 
     @Before
-    public void Setup() {
+    public void Setup()
+    {
         this._fakeConnection = Mockito.mock(Connection.class);
     }
 
     @Test
-    public void TestFind() throws SQLException {
+    public void TestFind() throws SQLException
+    {
         FakeDomainObject expected = new FakeDomainObject(1, false);
         PersistenceSearcher<FakeDomainObject> searcher = new PersistenceSearcher<>(FakeDomainObject.class);
         String fakeQuery = "A fake query.";
@@ -56,7 +58,8 @@ public class MySqlPersistenceManagerTest {
     }
 
     @Test
-    public void TestFindCollectionOf() throws SQLException {
+    public void TestFindCollectionOf() throws SQLException
+    {
         FakeDomainObject expectedObject = new FakeDomainObject(1, false);
         ArrayList<FakeDomainObject> expected = new ArrayList<>();
         expected.add(expectedObject);
@@ -95,7 +98,8 @@ public class MySqlPersistenceManagerTest {
     }
 
     @Test
-    public void TestAdd() throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+    public void TestAdd() throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException
+    {
         FakeDomainObject fakeObject = new FakeDomainObject(1, true);
         String fakeQuery = "A fake query";
         ArrayList saveQueries = new ArrayList();
@@ -121,7 +125,8 @@ public class MySqlPersistenceManagerTest {
     }
 
     @Test
-    public void TestChange() throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+    public void TestChange() throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException
+    {
         FakeDomainObject fakeObject = new FakeDomainObject(1, false);
         String fakeQuery = "A fake query";
         ArrayList saveQueries = new ArrayList();
@@ -147,7 +152,8 @@ public class MySqlPersistenceManagerTest {
     }
 
     @Test
-    public void TestCommit() throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+    public void TestCommit() throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException
+    {
         FakeDomainObject fakeObject = new FakeDomainObject(1, false);
         String fakeQuery = "A fake query";
         ArrayList saveQueries = new ArrayList();
@@ -181,7 +187,8 @@ public class MySqlPersistenceManagerTest {
     }
 
     @Test
-    public void TestCommitClearsListOnException() throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+    public void TestCommitClearsListOnException() throws SQLException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException
+    {
         FakeDomainObject fakeObject = new FakeDomainObject(1, false);
         String fakeQuery = "A fake query";
         ArrayList saveQueries = new ArrayList();
@@ -210,9 +217,12 @@ public class MySqlPersistenceManagerTest {
         Mockito.when(this._fakeConnection.createStatement())
                 .thenReturn(fakeStatement);
 
-        try {
+        try
+        {
             fakeManager.Commit();
-        } catch (SQLException ex) {
+        }
+        catch (SQLException ex)
+        {
             Assert.assertNotNull(ex);
         }
 
@@ -221,29 +231,33 @@ public class MySqlPersistenceManagerTest {
         Assert.assertTrue(queries.isEmpty());
     }
 
-    private static List<String> GetQueries(IPersistenceManager manager) throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+    private static List<String> GetQueries(IPersistenceManager manager) throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException
+    {
         Field queries = manager.getClass().getDeclaredField("_statementsToCommit");
         queries.setAccessible(true);
         return (List<String>) queries.get(manager);
     }
 
-    private class FakeDomainObject implements IUniqueObject<Integer> {
-
+    private class FakeDomainObject implements IUniqueObject<Integer>
+    {
         private final int _id;
         private final boolean _isNew;
 
-        public FakeDomainObject(int id, boolean isNewObject) {
+        public FakeDomainObject(int id, boolean isNewObject)
+        {
             this._id = id;
             this._isNew = isNewObject;
         }
 
         @Override
-        public Integer GetId() {
+        public Integer GetId()
+        {
             return this._id;
         }
 
         @Override
-        public boolean IsNewObject() {
+        public boolean IsNewObject()
+        {
             return this._isNew;
         }
     }

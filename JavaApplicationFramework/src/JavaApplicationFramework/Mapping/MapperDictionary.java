@@ -10,31 +10,37 @@ import java.util.HashMap;
 /**
  * A class to associate an instance of a mapper to the type it maps.
  */
-public final class MapperDictionary extends HashMap<Class<?>, IMapper> {
-    
+public final class MapperDictionary extends HashMap<Class<?>, IMapper>
+{
     /**
      * Initializes a new instance of the MapperDictionary class.
      */
-    public MapperDictionary(){
+    public MapperDictionary()
+    {
     }
-    
+
     /**
      * * Initializes a new instance of the MapperDictionary class.
+     *
      * @param mappers A collection of mappers the dictionary will hold.
      */
-    public MapperDictionary(IMapper... mappers){
-        for(IMapper mapper : mappers){
+    public MapperDictionary(IMapper... mappers)
+    {
+        for (IMapper mapper : mappers)
+        {
             super.put(mapper.GetMappedType(), mapper);
         }
     }
-    
+
     @Override
-    public IMapper put(Class key, IMapper value){
-        if(key != value.GetMappedType()){
+    public IMapper put(Class key, IMapper value)
+    {
+        if (key != value.GetMappedType())
+        {
             throw new UnsupportedOperationException(
                     "You cannot add a mapper to this dictionary with a key of different type to what it maps.");
         }
-        
+
         return super.put(key, value);
     }
 }
