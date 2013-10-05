@@ -120,6 +120,12 @@ public final class MySqlPersistenceManager implements IPersistenceManager {
         this._statementsToCommit.clear();
     }
 
+    @Override
+    public void Dispose() throws SQLException
+    {
+        this._connection.close();
+    }
+    
     private IMapper GetMapperForType(Class type) {
         IMapper mapper = this._mappers.get(type);
         
@@ -128,11 +134,5 @@ public final class MySqlPersistenceManager implements IPersistenceManager {
             throw new UnsupportedOperationException(message);
         }
         return mapper;
-    }
-
-    @Override
-    public void Dispose() throws SQLException
-    {
-        this._connection.close();
     }
 }

@@ -12,9 +12,16 @@ import java.util.HashMap;
  */
 public final class MapperDictionary extends HashMap<Class<?>, IMapper> {
     
+    /**
+     * Initializes a new instance of the MapperDictionary class.
+     */
     public MapperDictionary(){
     }
     
+    /**
+     * * Initializes a new instance of the MapperDictionary class.
+     * @param mappers A collection of mappers the dictionary will hold.
+     */
     public MapperDictionary(IMapper... mappers){
         for(IMapper mapper : mappers){
             super.put(mapper.GetMappedType(), mapper);

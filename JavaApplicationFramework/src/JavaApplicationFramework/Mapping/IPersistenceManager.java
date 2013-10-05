@@ -44,5 +44,9 @@ public interface IPersistenceManager {
       */
     void Commit() throws SQLException;
     
+    /**
+     * Clean up any resources of the persistence manager.
+     * @throws SQLException 
+     */
     void Dispose() throws SQLException;
 }
