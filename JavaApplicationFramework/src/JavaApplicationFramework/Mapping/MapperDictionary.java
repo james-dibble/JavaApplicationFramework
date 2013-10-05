@@ -11,6 +11,16 @@ import java.util.HashMap;
  * A class to associate an instance of a mapper to the type it maps.
  */
 public final class MapperDictionary extends HashMap<Class<?>, IMapper> {
+    
+    public MapperDictionary(){
+    }
+    
+    public MapperDictionary(IMapper... mappers){
+        for(IMapper mapper : mappers){
+            super.put(mapper.GetMappedType(), mapper);
+        }
+    }
+    
     @Override
     public IMapper put(Class key, IMapper value){
         if(key != value.GetMappedType()){

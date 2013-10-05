@@ -43,4 +43,6 @@ public interface IPersistenceManager {
       * @throws SQLException
       */
     void Commit() throws SQLException;
+    
+    void Dispose() throws SQLException;
 }

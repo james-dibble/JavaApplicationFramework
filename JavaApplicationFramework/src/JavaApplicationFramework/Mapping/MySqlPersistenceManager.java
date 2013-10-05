@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 /**
  * A context to manage interaction to a MySQL persistence source.
@@ -26,6 +27,12 @@ public final class MySqlPersistenceManager implements IPersistenceManager {
 
     public MySqlPersistenceManager(Connection connection, MapperDictionary mappers) {
         this._connection = connection;
+        this._mappers = mappers;
+        this._statementsToCommit = new Stack<>();
+    }
+    
+    public MySqlPersistenceManager(DriverManagerDataSource dataSource, MapperDictionary mappers) throws SQLException {
+        this._connection = dataSource.getConnection();
         this._mappers = mappers;
         this._statementsToCommit = new Stack<>();
     }
@@ -121,5 +128,11 @@ public final class MySqlPersistenceManager implements IPersistenceManager {
             throw new UnsupportedOperationException(message);
         }
         return mapper;
+    }
+
+    @Override
+    public void Dispose() throws SQLException
+    {
+        this._connection.close();
     }
 }
