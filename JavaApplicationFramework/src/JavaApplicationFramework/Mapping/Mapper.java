@@ -8,8 +8,6 @@ package JavaApplicationFramework.Mapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Extending classes define methods to interact with a persitable object.
@@ -27,13 +25,13 @@ public abstract class Mapper<T extends IPersistableObject> implements IMapper<T>
     public abstract Class GetMappedType();
 
     /**
-     * Map a &gtT&lt; from the first element of the results.
+     * Map a &ltT&gt; from the first element of the results.
      *
      * @param results The ResultSet from a GetFindQuery.
-     * @return A populated &gtT&lt;.
+     * @return A populated &ltT&gt;.
      */
     @Override
-    public T FindSingle(ResultSet results)
+    public final T FindSingle(ResultSet results)
     {
         if (Mapper.IsEmptyResultSet(results))
         {
@@ -46,34 +44,36 @@ public abstract class Mapper<T extends IPersistableObject> implements IMapper<T>
     }
 
     /**
-     * Map all the &gtT&lt;'s from the results.
+     * Map all the &ltT&gt;'s from the results.
      *
      * @param results The ResultSet from a GetFindQuery.
-     * @return A collection of populated &gtT&lt;s.
+     * @return A collection of populated &ltT&gt;s.
      */
     @Override
-    public Iterable<T> FindCollectionOf(ResultSet results)
+    public final Iterable<T> FindCollectionOf(ResultSet results)
     {
+        ArrayList<T> mappedObjects = new ArrayList<>();
+        
         if (Mapper.IsEmptyResultSet(results))
         {
-            return new ArrayList<>();
+            return mappedObjects;
         }
-
-        ArrayList<T> mappedObjects = new ArrayList<>();
-
+        
         try
         {
             do
             {
                 T mappedObject = this.MapFromResultSet(results);
 
-                mappedObjects.add(mappedObject);
+                if (mappedObject != null)
+                {
+                    mappedObjects.add(mappedObject);
+                }
             }
             while (results.next());
         }
         catch (SQLException ex)
         {
-            Logger.getLogger(Mapper.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return mappedObjects;
@@ -110,7 +110,7 @@ public abstract class Mapper<T extends IPersistableObject> implements IMapper<T>
      * Create a domain object from the results of a query.
      *
      * @param results The results of a query from the persistence source.
-     * @return A populated domain object.
+     * @return A populated domain object or null if the object could not be mapped.
      */
     protected abstract T MapFromResultSet(ResultSet results);
 

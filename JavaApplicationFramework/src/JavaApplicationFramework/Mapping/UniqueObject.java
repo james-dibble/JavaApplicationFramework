@@ -15,7 +15,7 @@ public abstract class UniqueObject<TKey> extends PersistableObject implements IU
     private TKey _id;
 
     /**
-     * Initializes a new instance of the UniqueObject class.
+     * Initialises a new instance of the UniqueObject class.
      * @param isNewObject A value indicating whether this is an object that has previously been persisted.
      * @param id The unique identifier of this object.
      */

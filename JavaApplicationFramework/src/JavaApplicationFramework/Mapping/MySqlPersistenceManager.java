@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 /**
@@ -26,11 +24,24 @@ public final class MySqlPersistenceManager implements IPersistenceManager
     private final MapperDictionary _mappers;
     private List<String> _statementsToCommit;
 
+    /**
+     * Initialises a new instance of the MySqlPersistenceManager class.
+     *
+     * @param dataSource A Spring data source.
+     * @param mappers A collection of know type mappers.
+     * @throws SQLException The data source could not create a connection.
+     */
     public MySqlPersistenceManager(DriverManagerDataSource dataSource, MapperDictionary mappers) throws SQLException
     {
         this(dataSource.getConnection(), mappers);
     }
 
+    /**
+     * Initialises a new instance of the MySqlPersistenceManager class.
+     *
+     * @param connection A JDBC connection to the MySQL source.
+     * @param mappers A collection of know type mappers.
+     */
     public MySqlPersistenceManager(Connection connection, MapperDictionary mappers)
     {
         this._connection = connection;
@@ -57,7 +68,6 @@ public final class MySqlPersistenceManager implements IPersistenceManager
         }
         catch (SQLException ex)
         {
-            Logger.getLogger(MySqlPersistenceManager.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return result;
@@ -82,7 +92,6 @@ public final class MySqlPersistenceManager implements IPersistenceManager
         }
         catch (SQLException ex)
         {
-            Logger.getLogger(MySqlPersistenceManager.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return result;
@@ -134,8 +143,10 @@ public final class MySqlPersistenceManager implements IPersistenceManager
             this._statementsToCommit.clear();
             throw ex;
         }
-
-        this._statementsToCommit.clear();
+        finally
+        {
+            this._statementsToCommit.clear();
+        }
     }
 
     @Override
@@ -153,7 +164,7 @@ public final class MySqlPersistenceManager implements IPersistenceManager
             String message = String.format("A mapper has not been registered for type %s", type.toString());
             throw new UnsupportedOperationException(message);
         }
-        
+
         return mapper;
     }
 }

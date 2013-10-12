@@ -13,7 +13,7 @@ public abstract class PersistableObject implements IPersistableObject
     private boolean _isNewObject;
 
     /**
-     * Initializes a new instance of the PersistebleObject class.
+     * Initialises a new instance of the PersistebleObject class.
      * @param isNewObject A value indicating whether this object is new.
      */
     protected PersistableObject(boolean isNewObject)
