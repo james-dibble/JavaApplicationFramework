@@ -26,16 +26,14 @@ public final class MySqlPersistenceManager implements IPersistenceManager
     private final MapperDictionary _mappers;
     private List<String> _statementsToCommit;
 
+    public MySqlPersistenceManager(DriverManagerDataSource dataSource, MapperDictionary mappers) throws SQLException
+    {
+        this(dataSource.getConnection(), mappers);
+    }
+
     public MySqlPersistenceManager(Connection connection, MapperDictionary mappers)
     {
         this._connection = connection;
-        this._mappers = mappers;
-        this._statementsToCommit = new Stack<>();
-    }
-
-    public MySqlPersistenceManager(DriverManagerDataSource dataSource, MapperDictionary mappers) throws SQLException
-    {
-        this._connection = dataSource.getConnection();
         this._mappers = mappers;
         this._statementsToCommit = new Stack<>();
     }
@@ -155,6 +153,7 @@ public final class MySqlPersistenceManager implements IPersistenceManager
             String message = String.format("A mapper has not been registered for type %s", type.toString());
             throw new UnsupportedOperationException(message);
         }
+        
         return mapper;
     }
 }
