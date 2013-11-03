@@ -19,4 +19,11 @@ public interface IUniqueObject<TKey> extends IPersistableObject
      * @return
      */
     TKey GetId();
+    
+    /**
+     * A JSLT friendly version of GetId.
+     * 
+     * @return 
+     */
+    TKey getId();
 }

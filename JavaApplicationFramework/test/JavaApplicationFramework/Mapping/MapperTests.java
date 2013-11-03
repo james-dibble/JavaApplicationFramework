@@ -89,6 +89,12 @@ public class MapperTests
         {
             return true;
         }
+
+        @Override
+        public Integer getId()
+        {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
     }
 
     private class FakeMapper extends Mapper<FakeDomainObject>

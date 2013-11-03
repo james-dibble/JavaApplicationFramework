@@ -35,6 +35,17 @@ public abstract class UniqueObject<TKey> extends PersistableObject implements IU
     {
         return this._id;
     }
+    
+    /**
+     * Gets the value to the unique key of this object.
+     *
+     * @return
+     */
+    @Override
+    public TKey getId()
+    {
+        return this._id;
+    }
 
     /**
      * Sets the value of the unique identifier of this object.

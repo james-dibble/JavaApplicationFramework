@@ -28,14 +28,14 @@ public final class MapperDictionary extends HashMap<Class<?>, IMapper>
     {
         for (IMapper mapper : mappers)
         {
-            super.put(mapper.GetMappedType(), mapper);
+            this.put(mapper.GetMappedType(), mapper);
         }
     }
 
     @Override
     public IMapper put(Class key, IMapper value)
     {
-        if (key != value.GetMappedType())
+        if (!value.GetMappedType().isAssignableFrom(key))
         {
             throw new UnsupportedOperationException(
                     "You cannot add a mapper to this dictionary with a key of different type to what it maps.");

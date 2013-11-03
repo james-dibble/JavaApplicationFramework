@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 /**
  * A context to manage interaction to a MySQL persistence source.
@@ -23,18 +22,6 @@ public final class MySqlPersistenceManager implements IPersistenceManager
     private final Connection _connection;
     private final MapperDictionary _mappers;
     private List<String> _statementsToCommit;
-
-    /**
-     * Initialises a new instance of the MySqlPersistenceManager class.
-     *
-     * @param dataSource A Spring data source.
-     * @param mappers A collection of know type mappers.
-     * @throws SQLException The data source could not create a connection.
-     */
-    public MySqlPersistenceManager(DriverManagerDataSource dataSource, MapperDictionary mappers) throws SQLException
-    {
-        this(dataSource.getConnection(), mappers);
-    }
 
     /**
      * Initialises a new instance of the MySqlPersistenceManager class.

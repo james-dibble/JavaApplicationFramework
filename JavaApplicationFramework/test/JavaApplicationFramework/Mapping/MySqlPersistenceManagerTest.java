@@ -260,5 +260,11 @@ public class MySqlPersistenceManagerTest
         {
             return this._isNew;
         }
+
+        @Override
+        public Integer getId()
+        {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
     }
 }
