@@ -6,9 +6,7 @@
 package JavaApplicationFramework.Servlet;
 
 import JavaApplicationFramework.Servlet.ActionAttribute.HttpMethod;
-import com.google.gson.Gson;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -30,13 +28,13 @@ public abstract class Controller extends HttpServlet
     public void init()
     {
         Field[] fields = this.getClass().getDeclaredFields();
-        
+
         ServletContext context = this.getServletContext();
-        
-        for(Field field : fields)
+
+        for (Field field : fields)
         {
-            if(field.isAnnotationPresent(InjectAttribute.class))
-            {               
+            if (field.isAnnotationPresent(InjectAttribute.class))
+            {
                 try
                 {
                     field.setAccessible(true);
@@ -51,7 +49,7 @@ public abstract class Controller extends HttpServlet
             }
         }
     }
-    
+
     @Override
     protected final void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
@@ -79,7 +77,7 @@ public abstract class Controller extends HttpServlet
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void processRequest(HttpServletRequest request, HttpServletResponse response, HttpMethod httpMethod)
             throws ServletException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
@@ -92,52 +90,44 @@ public abstract class Controller extends HttpServlet
             if (method.isAnnotationPresent(ActionAttribute.class))
             {
                 ActionAttribute attr = GetAction(method);
-                
-                if(attr.Method() == httpMethod && attr.Path().toLowerCase().equals(path.toLowerCase()))
+
+                if (attr.Method() == httpMethod && attr.Path().toLowerCase().equals(path.toLowerCase()))
                 {
-                    method.invoke(this, request, response);
+                    IActionResult action = (IActionResult) method.invoke(this, request, response);
+                    action.DoAction(request, response);
                     break;
                 }
             }
         }
     }
-    
+
     protected static int GetRequestParam(HttpServletRequest request, String param)
     {
         return Integer.parseInt(request.getParameter(param));
     }
-    
-    protected static void JsonResult(HttpServletRequest request, HttpServletResponse response, Object objectToReturn) throws UnsupportedEncodingException, IOException
-    {
-        request.setCharacterEncoding("utf8");
-        response.setContentType("application/json");
 
-        String json = new Gson().toJson(objectToReturn);
-
-        response.getWriter().write(json);
-        response.getWriter().flush();
-    }
-    
     protected static <T> T GetSessionAttribute(HttpSession session, String attribute)
     {
-        if (session.getAttribute("orders") == null)
+        Object sessionObject;
+
+        if ((sessionObject = session.getAttribute("orders")) != null)
         {
-            return null;
+            return (T) sessionObject;
         }
 
-        return (T) session.getAttribute("orders");
+        return null;
     }
-        
+
     private static ActionAttribute GetAction(Method method)
     {
-        for(Annotation attr : method.getDeclaredAnnotations())
+        for (Annotation attr : method.getDeclaredAnnotations())
         {
-            if(attr.annotationType() == ActionAttribute.class)
+            if (attr.annotationType() == ActionAttribute.class)
             {
-                return (ActionAttribute)attr;
+                return (ActionAttribute) attr;
             }
         }
-        
+
         throw new IllegalStateException("This method has no action attribute.");
     }
 }
