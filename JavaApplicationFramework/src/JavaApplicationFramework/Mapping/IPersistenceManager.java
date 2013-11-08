@@ -45,6 +45,13 @@ public interface IPersistenceManager
      * @param objectToSave The object to save.
      */
     void Change(IPersistableObject objectToSave);
+    
+    /**
+     * Remove a given object into the persistence source.
+     *
+     * @param objectToDelete The object to save.
+     */
+    void Delete(IPersistableObject objectToDelete);
 
     /**
      * Run the queries for this context to add or change objects.

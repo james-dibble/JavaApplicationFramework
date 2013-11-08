@@ -105,6 +105,15 @@ public abstract class Mapper<T extends IPersistableObject> implements IMapper<T>
      */
     @Override
     public abstract Iterable<String> GetObjectSaveQueries(T objectToSave);
+    
+    /**
+     * Create a set of queries to persist a given object.
+     *
+     * @param objectToSave The object to place into the persistence source.
+     * @return A collection of queries to save the given object.
+     */
+    @Override
+    public abstract Iterable<String> GetObjectDeleteQueries(T objectToDelete);
 
     /**
      * Create a domain object from the results of a query.

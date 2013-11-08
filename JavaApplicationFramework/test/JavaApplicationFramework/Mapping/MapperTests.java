@@ -128,5 +128,10 @@ public class MapperTests
         {
             return _fakeObject;
         }
+
+        @Override
+        public Iterable<String> GetObjectDeleteQueries(FakeDomainObject objectToDelete) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
     }
 }

@@ -52,6 +52,14 @@ public interface IMapper<T extends IPersistableObject>
      * @return A collection of queries to save the given object.
      */
     Iterable<String> GetObjectCreateQueries(T objectToSave);
+    
+    /**
+     * Create a set of queries to persist a given object.
+     *
+     * @param objectToSave The object to place into the persistence source.
+     * @return A collection of queries to save the given object.
+     */
+    Iterable<String> GetObjectDeleteQueries(T objectToDelete);
 
     /**
      * Create a set of queries to persist changes to a given object.

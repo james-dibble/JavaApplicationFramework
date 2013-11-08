@@ -115,6 +115,15 @@ public final class MySqlPersistenceManager implements IPersistenceManager
     }
 
     @Override
+    public void Delete(IPersistableObject objectToDelete) {
+        IMapper mapper = this.GetMapperForType(objectToDelete.getClass());
+        
+        Iterable<String> queries = mapper.GetObjectDeleteQueries(objectToDelete);
+
+        this._statementsToCommit.addAll((Collection<? extends String>) queries);
+    }
+
+    @Override
     public void Commit() throws SQLException
     {
         try
