@@ -60,7 +60,7 @@ public abstract class Controller extends HttpServlet
         }
         catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
         {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ServletException(ex);
         }
     }
 
@@ -74,7 +74,7 @@ public abstract class Controller extends HttpServlet
         }
         catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
         {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ServletException(ex);
         }
     }
 
