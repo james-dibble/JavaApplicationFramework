@@ -110,7 +110,7 @@ public abstract class Controller extends HttpServlet
     {
         Object sessionObject;
 
-        if ((sessionObject = session.getAttribute("orders")) != null)
+        if ((sessionObject = session.getAttribute(attribute)) != null)
         {
             return (T) sessionObject;
         }
