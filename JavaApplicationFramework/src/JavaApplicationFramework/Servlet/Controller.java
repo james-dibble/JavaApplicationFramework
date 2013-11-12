@@ -154,9 +154,9 @@ public abstract class Controller extends HttpServlet
 
         for (Method method : methods)
         {
-            if (method.isAnnotationPresent(ActionAttribute.class))
+            if (method.isAnnotationPresent(ActionAttribute.class) && method.getReturnType().isAssignableFrom(IActionResult.class))
             {
-                ActionAttribute attr = GetAction(method);
+                ActionAttribute attr = Controller.GetAction(method);
 
                 if (attr.Method() == httpMethod && attr.Path().toLowerCase().equals(path.toLowerCase()))
                 {
