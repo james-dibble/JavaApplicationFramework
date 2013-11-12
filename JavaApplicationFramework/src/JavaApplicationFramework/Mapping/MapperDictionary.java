@@ -43,4 +43,25 @@ public final class MapperDictionary extends HashMap<Class<?>, IMapper>
 
         return super.put(key, value);
     }
+
+    @Override
+    public IMapper get(Object key)
+    {
+        IMapper mapper = super.get(key);
+
+        if (mapper != null)
+        {
+            return mapper;
+        }
+
+        for (Class mapperKey : this.keySet())
+        {
+            if (mapperKey.isAssignableFrom((Class)key))
+            {
+                return super.get(mapperKey);
+            }
+        }
+        
+        return null;
+    }
 }

@@ -53,11 +53,10 @@ public final class MySqlPersistenceManager implements IPersistenceManager
 
             result = (T) mapper.FindSingle(results);
         }
-        catch (SQLException ex)
+        finally
         {
+            return result;
         }
-
-        return result;
     }
 
     @Override
@@ -77,11 +76,10 @@ public final class MySqlPersistenceManager implements IPersistenceManager
 
             result = mapper.FindCollectionOf(results);
         }
-        catch (SQLException ex)
+        finally
         {
+            return result;
         }
-
-        return result;
     }
 
     @Override
@@ -128,19 +126,19 @@ public final class MySqlPersistenceManager implements IPersistenceManager
     {
         try
         {
+            this._connection.setAutoCommit(false);
+            
             for (String statement : this._statementsToCommit)
             {
                 Statement sqlStatement = this._connection.createStatement();
                 sqlStatement.executeUpdate(statement);
             }
-        }
-        catch (SQLException ex)
-        {
-            this._statementsToCommit.clear();
-            throw ex;
+            
+            this._connection.commit();
         }
         finally
         {
+            this._connection.setAutoCommit(true);
             this._statementsToCommit.clear();
         }
     }

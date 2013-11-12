@@ -1,13 +1,13 @@
-package JavaApplicationFramework.Mapping;
-
 // --------------------------------------------------------------------------------------------------------------------
-import java.sql.Connection;
-import java.sql.SQLException;
-
 // <copyright file="IConnectionFactory.java" company="James Dibble">
 //    Copyright 2013 James Dibble
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+package JavaApplicationFramework.Mapping;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
 /**
  * Implementing classes define methods for creating JDBC Connections
  */
