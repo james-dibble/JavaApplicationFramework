@@ -20,10 +20,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+/**
+ * A base class for all controllers.
+ */
 public abstract class Controller extends HttpServlet
 {
+    /**
+     * Gets the base path of this controller.
+     * @return The base path of this controller. 
+     */
     protected abstract String ControllerPath();
 
+    /**
+     * Inject objects into controllers defined by annotations.
+     */
     @Override
     public void init()
     {
@@ -50,6 +60,13 @@ public abstract class Controller extends HttpServlet
         }
     }
 
+    /**
+     * Process an HTTP GET request.
+     * @param request The request.
+     * @param response The response.
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected final void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
@@ -64,6 +81,13 @@ public abstract class Controller extends HttpServlet
         }
     }
 
+     /**
+     * Process an HTTP POST request.
+     * @param request The request.
+     * @param response The response.
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected final void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
@@ -78,34 +102,24 @@ public abstract class Controller extends HttpServlet
         }
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response, HttpMethod httpMethod)
-            throws ServletException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
-    {
-        String path = request.getServletPath().replace(this.ControllerPath(), "");
-
-        Method[] methods = this.getClass().getMethods();
-
-        for (Method method : methods)
-        {
-            if (method.isAnnotationPresent(ActionAttribute.class))
-            {
-                ActionAttribute attr = GetAction(method);
-
-                if (attr.Method() == httpMethod && attr.Path().toLowerCase().equals(path.toLowerCase()))
-                {
-                    IActionResult action = (IActionResult) method.invoke(this, request, response);
-                    action.DoAction(request, response);
-                    break;
-                }
-            }
-        }
-    }
-
+    /**
+     * Retrieve an integer value from the request parameters.
+     * @param request The request.
+     * @param param The parameter to find.
+     * @return The parameter as an integer.
+     */
     protected static int GetRequestParam(HttpServletRequest request, String param)
     {
         return Integer.parseInt(request.getParameter(param));
     }
 
+    /**
+     * Pull a named object from a session and cast it to it's original type.
+     * @param <T> The type of the object in the session.
+     * @param session The session.
+     * @param attribute The key for the object in the session.
+     * @return The named object from the session.
+     */
     protected static <T> T GetSessionAttribute(HttpSession session, String attribute)
     {
         Object sessionObject;
@@ -129,5 +143,28 @@ public abstract class Controller extends HttpServlet
         }
 
         throw new IllegalStateException("This method has no action attribute.");
+    }
+    
+    private void processRequest(HttpServletRequest request, HttpServletResponse response, HttpMethod httpMethod)
+            throws ServletException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    {
+        String path = request.getServletPath().replace(this.ControllerPath(), "");
+
+        Method[] methods = this.getClass().getMethods();
+
+        for (Method method : methods)
+        {
+            if (method.isAnnotationPresent(ActionAttribute.class))
+            {
+                ActionAttribute attr = GetAction(method);
+
+                if (attr.Method() == httpMethod && attr.Path().toLowerCase().equals(path.toLowerCase()))
+                {
+                    IActionResult action = (IActionResult) method.invoke(this, request, response);
+                    action.DoAction(request, response);
+                    break;
+                }
+            }
+        }
     }
 }

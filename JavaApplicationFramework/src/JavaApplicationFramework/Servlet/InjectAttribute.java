@@ -10,6 +10,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * An annotation to define a field that needs to have its value injected during
+ * servlet initialisation.
+ */
 @Target(value={ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface InjectAttribute 
