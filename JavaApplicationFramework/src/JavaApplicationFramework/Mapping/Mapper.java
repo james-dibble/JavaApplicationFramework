@@ -53,12 +53,12 @@ public abstract class Mapper<T extends IPersistableObject> implements IMapper<T>
     public final Iterable<T> FindCollectionOf(ResultSet results)
     {
         ArrayList<T> mappedObjects = new ArrayList<>();
-        
+
         if (Mapper.IsEmptyResultSet(results))
         {
             return mappedObjects;
         }
-        
+
         try
         {
             do
@@ -72,54 +72,18 @@ public abstract class Mapper<T extends IPersistableObject> implements IMapper<T>
             }
             while (results.next());
         }
-        catch (SQLException ex)
+        finally
         {
+            return mappedObjects;
         }
-
-        return mappedObjects;
     }
-
-    /**
-     * Create a query that gets &gtT&lt; from the persistence source.
-     *
-     * @param searcher The parameters to conduct the search for the &gtT&lt;.
-     * @return The query in string format.
-     */
-    @Override
-    public abstract String GetFindQuery(IPersistenceSearcher<T> searcher);
-
-    /**
-     * Create a set of queries to persist a given object.
-     *
-     * @param objectToSave The object to place into the persistence source.
-     * @return A collection of queries to save the given object.
-     */
-    @Override
-    public abstract Iterable<String> GetObjectCreateQueries(T objectToSave);
-
-    /**
-     * Create a set of queries to persist changes to a given object.
-     *
-     * @param objectToSave The object to change in the persistence source.
-     * @return A collection of queries to save the given object.
-     */
-    @Override
-    public abstract Iterable<String> GetObjectSaveQueries(T objectToSave);
-    
-    /**
-     * Create a set of queries to persist a given object.
-     *
-     * @param objectToSave The object to place into the persistence source.
-     * @return A collection of queries to save the given object.
-     */
-    @Override
-    public abstract Iterable<String> GetObjectDeleteQueries(T objectToDelete);
 
     /**
      * Create a domain object from the results of a query.
      *
      * @param results The results of a query from the persistence source.
-     * @return A populated domain object or null if the object could not be mapped.
+     * @return A populated domain object or null if the object could not be
+     * mapped.
      */
     protected abstract T MapFromResultSet(ResultSet results);
 
