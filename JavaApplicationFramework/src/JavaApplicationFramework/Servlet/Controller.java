@@ -7,12 +7,9 @@ package JavaApplicationFramework.Servlet;
 
 import JavaApplicationFramework.Servlet.ActionAttribute.HttpMethod;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +22,8 @@ import javax.servlet.http.HttpSession;
  */
 public abstract class Controller extends HttpServlet
 {
+    private Iterable<IActionFilter> _filters;
+    
     /**
      * Gets the base path of this controller.
      * @return The base path of this controller. 
@@ -35,12 +34,12 @@ public abstract class Controller extends HttpServlet
      * Inject objects into controllers defined by annotations.
      */
     @Override
-    public void init()
+    public void init() throws ServletException
     {
-        Field[] fields = this.getClass().getDeclaredFields();
-
         ServletContext context = this.getServletContext();
-
+        
+        Field[] fields = this.getClass().getDeclaredFields();
+        
         for (Field field : fields)
         {
             if (field.isAnnotationPresent(InjectAttribute.class))
@@ -54,7 +53,7 @@ public abstract class Controller extends HttpServlet
                 }
                 catch (IllegalArgumentException | IllegalAccessException ex)
                 {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new ServletException(ex);
                 }
             }
         }
@@ -132,37 +131,33 @@ public abstract class Controller extends HttpServlet
         return null;
     }
 
-    private static ActionAttribute GetAction(Method method)
+    private Iterable<IActionFilter> GetFilters()
     {
-        for (Annotation attr : method.getDeclaredAnnotations())
+        if(this._filters == null)
         {
-            if (attr.annotationType() == ActionAttribute.class)
-            {
-                return (ActionAttribute) attr;
-            }
+            this._filters = (Iterable<IActionFilter>)this.getServletContext().getAttribute(ActionFilterCollection.class.getName());
         }
-
-        throw new IllegalStateException("This method has no action attribute.");
+        
+        return this._filters;
     }
     
     private void processRequest(HttpServletRequest request, HttpServletResponse response, HttpMethod httpMethod)
             throws ServletException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
-    {
+    {        
         String path = request.getServletPath().replace(this.ControllerPath(), "");
 
         Method[] methods = this.getClass().getMethods();
 
         for (Method method : methods)
         {
-            if (method.isAnnotationPresent(ActionAttribute.class) && method.getReturnType().isAssignableFrom(IActionResult.class))
+            for(IActionFilter filter : this.GetFilters())
             {
-                ActionAttribute attr = Controller.GetAction(method);
-
-                if (attr.Method() == httpMethod && attr.Path().toLowerCase().equals(path.toLowerCase()))
+                if(filter.CanApplyAction(method, request, httpMethod, path))
                 {
-                    IActionResult action = (IActionResult) method.invoke(this, request, response);
-                    action.DoAction(request, response);
-                    break;
+                    IActionResult result = filter.ApplyAction(this, method, request);
+                    
+                    result.DoAction(request, response);
+                    return;
                 }
             }
         }
