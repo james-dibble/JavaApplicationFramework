@@ -39,7 +39,7 @@ public abstract class ServletBootstrapper implements ServletContextListener
             throw new UnsupportedOperationException("Cannot bind an object to class it does not inherit.");
         }
         
-        context.setAttribute(bindingClass.getName(), objectToBind);
+        this.Bind(objectToBind, bindingClass.getName(), context);
     }
     
     /**
@@ -50,7 +50,7 @@ public abstract class ServletBootstrapper implements ServletContextListener
      */
     protected void Bind(Object objectToBind, ServletContext context)
     {
-        context.setAttribute(objectToBind.getClass().getName(), objectToBind);
+        this.Bind(objectToBind, objectToBind.getClass().getName(), context);
     }
     
     /**

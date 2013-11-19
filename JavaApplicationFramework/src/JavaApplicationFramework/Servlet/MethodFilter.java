@@ -6,10 +6,7 @@
 package JavaApplicationFramework.Servlet;
 
 import JavaApplicationFramework.Servlet.ActionAttribute.HttpMethod;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 public class MethodFilter implements IActionFilter
@@ -22,7 +19,7 @@ public class MethodFilter implements IActionFilter
             return true;
         }
         
-        return action.getName().equalsIgnoreCase(path.replace("/", ""));
+        return path.replaceAll("^/+", "").toLowerCase().startsWith(action.getName().toLowerCase());
     }
 
     @Override

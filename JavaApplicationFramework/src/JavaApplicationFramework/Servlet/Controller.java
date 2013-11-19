@@ -8,7 +8,6 @@ package JavaApplicationFramework.Servlet;
 import JavaApplicationFramework.Servlet.ActionAttribute.HttpMethod;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -72,14 +71,7 @@ public abstract class Controller extends HttpServlet
     protected final void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
     {
-        try
-        {
-            processRequest(request, response, HttpMethod.GET);
-        }
-        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
-        {
-            throw new ServletException(ex);
-        }
+        this.ProcessRequest(request, response, HttpMethod.GET);
     }
 
     /**
@@ -94,14 +86,7 @@ public abstract class Controller extends HttpServlet
     protected final void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
     {
-        try
-        {
-            processRequest(request, response, HttpMethod.POST);
-        }
-        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
-        {
-            throw new ServletException(ex);
-        }
+        this.ProcessRequest(request, response, HttpMethod.POST);
     }
 
     /**
@@ -146,26 +131,31 @@ public abstract class Controller extends HttpServlet
         return this._filters;
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response, HttpMethod httpMethod)
-            throws ServletException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    private void ProcessRequest(HttpServletRequest request, HttpServletResponse response, HttpMethod httpMethod) throws ServletException
     {
-        String path = request.getServletPath().replace(this.ControllerPath(), "");
-
-        Method[] methods = this.getClass().getMethods();
-
-        for (IActionFilter filter : this.GetFilters())
+        try
         {
-            for (Method method : methods)
+            String path = request.getServletPath().replaceAll("^".concat(this.ControllerPath()).concat("+"), "");
+
+            Method[] methods = this.getClass().getMethods();
+
+            for (IActionFilter filter : this.GetFilters())
             {
-                if (filter.CanApplyAction(method, request, httpMethod, path))
+                for (Method method : methods)
                 {
-                    IActionResult result = filter.ApplyAction(this, method, request);
+                    if (filter.CanApplyAction(method, request, httpMethod, path))
+                    {
+                        IActionResult result = filter.ApplyAction(this, method, request);
 
-                    result.DoAction(request, response);
-                    return;
+                        result.DoAction(request, response);
+                        return;
+                    }
                 }
-
             }
+        }
+        catch (IllegalArgumentException | IOException ex)
+        {
+            throw new ServletException(ex);
         }
     }
 }
