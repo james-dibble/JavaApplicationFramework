@@ -23,10 +23,11 @@ import javax.servlet.http.HttpSession;
 public abstract class Controller extends HttpServlet
 {
     private Iterable<IActionFilter> _filters;
-    
+
     /**
      * Gets the base path of this controller.
-     * @return The base path of this controller. 
+     *
+     * @return The base path of this controller.
      */
     protected abstract String ControllerPath();
 
@@ -37,9 +38,9 @@ public abstract class Controller extends HttpServlet
     public void init() throws ServletException
     {
         ServletContext context = this.getServletContext();
-        
+
         Field[] fields = this.getClass().getDeclaredFields();
-        
+
         for (Field field : fields)
         {
             if (field.isAnnotationPresent(InjectAttribute.class))
@@ -61,6 +62,7 @@ public abstract class Controller extends HttpServlet
 
     /**
      * Process an HTTP GET request.
+     *
      * @param request The request.
      * @param response The response.
      * @throws ServletException
@@ -80,8 +82,9 @@ public abstract class Controller extends HttpServlet
         }
     }
 
-     /**
+    /**
      * Process an HTTP POST request.
+     *
      * @param request The request.
      * @param response The response.
      * @throws ServletException
@@ -103,6 +106,7 @@ public abstract class Controller extends HttpServlet
 
     /**
      * Retrieve an integer value from the request parameters.
+     *
      * @param request The request.
      * @param param The parameter to find.
      * @return The parameter as an integer.
@@ -114,6 +118,7 @@ public abstract class Controller extends HttpServlet
 
     /**
      * Pull a named object from a session and cast it to it's original type.
+     *
      * @param <T> The type of the object in the session.
      * @param session The session.
      * @param attribute The key for the object in the session.
@@ -133,32 +138,33 @@ public abstract class Controller extends HttpServlet
 
     private Iterable<IActionFilter> GetFilters()
     {
-        if(this._filters == null)
+        if (this._filters == null)
         {
-            this._filters = (Iterable<IActionFilter>)this.getServletContext().getAttribute(ActionFilterCollection.class.getName());
+            this._filters = (Iterable<IActionFilter>) this.getServletContext().getAttribute(ActionFilterCollection.class.getName());
         }
-        
+
         return this._filters;
     }
-    
+
     private void processRequest(HttpServletRequest request, HttpServletResponse response, HttpMethod httpMethod)
             throws ServletException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
-    {        
+    {
         String path = request.getServletPath().replace(this.ControllerPath(), "");
 
         Method[] methods = this.getClass().getMethods();
 
-        for (Method method : methods)
+        for (IActionFilter filter : this.GetFilters())
         {
-            for(IActionFilter filter : this.GetFilters())
+            for (Method method : methods)
             {
-                if(filter.CanApplyAction(method, request, httpMethod, path))
+                if (filter.CanApplyAction(method, request, httpMethod, path))
                 {
                     IActionResult result = filter.ApplyAction(this, method, request);
-                    
+
                     result.DoAction(request, response);
                     return;
                 }
+
             }
         }
     }
